@@ -6,6 +6,8 @@ on:
   issue_comment:
     types: [created, edited]
   workflow_dispatch:
+env:
+  NEXT_PUBLIC_BASE_URL: ${{secrets.NEXT_PUBLIC_BASE_URL}}
 jobs:
   # for Pull Request (exclude merged)
   pullreq_build:
@@ -31,9 +33,6 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Generate
-        run: npm run generate
-        # - name: Zip artifact for upload
         #  run: cd dist && zip ../dist.zip . -r
       - name: Archive Production Artifact
         uses: actions/upload-artifact@v3
@@ -74,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.sha }}-${{ github.run_id }}
-          path: dist
+          path: out
           retention-days: 7
       - name: Webhook
         uses: diverta/workflow-webhook@v2
